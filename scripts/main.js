@@ -55,8 +55,8 @@ function kirby(){
 
     //For explanation of the boolean below, see my blog
     //http://ethaneldridgecs.blogspot.com/2012/11/kd-tree-range-bounded-algorithm.html
-
-    return  !(xright < oleft || oright < xleft || otop > ybottom || ytop > obottom );
+    //modified slighlty because js coordinates are from the top left as origin
+    return  !(xright < oleft) && !(oright < xleft) && !(otop > ybottom) && !(ytop > obottom );
   }
 }
 
@@ -129,25 +129,37 @@ function star(sx,sy){
 
     //For explanation of the boolean below, see my blog
     //http://ethaneldridgecs.blogspot.com/2012/11/kd-tree-range-bounded-algorithm.html
-    return  (xright < oleft) || (oright < xleft) || (otop > ybottom) || (ytop > obottom) ;
-  }
-  this.collide = function(b) {
-    var a = this;
-    return !(
-        ((a.y - a.height) < (b.y)) ||
-        (a.y > (b.y - b.height)) ||
-        ((a.x + a.width) < b.x) ||
-        (a.x > (b.x + b.width))
-    );
+    //modified slighlty because js coordinates are from the top left as origin
+    return  !(xright < oleft) && !(oright < xleft) && !(otop > ybottom) && !(ytop > obottom );
   }
 }
 
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function makeStars(){
+  var xs = [120,200,280];
+  var ys = [];
+  tmp =[];
+  for(var i =0; i < 10; i++){
+    ys.push(getRandomInt(-60,360));
+  }
+  for(var i=0; i < 10; i++){
+    tmp.push(new star(xs[getRandomInt(0,2)],ys[i]));
+  }
+  return tmp;
+}
 
 var canvas = document.getElementById('canvas');
 
 var player = new kirby();
 
-var stars = [new star(120,0), new star(200,-30),new star(280,-100)];
+var stars = makeStars();//[new star(120,0), new star(200,-30),new star(280,-100)];
+
+var lives = parseInt(document.getElementById('lives').innerHTML);
+var wins = parseInt(document.getElementById('wins').innerHTML);
+
 
 function render(){
   //Make sure we got it
@@ -185,12 +197,19 @@ function render(){
         stars[s].draw(context);
         //Check for collisions -done while drawing for optimization purposes (no need for another loop to check I mean)
         if(player.collide(stars[s])){
-          console.log("hit");
+          fireEvent('death',document)
         }
       }
 
       //place kirby down
       player.draw(context);   
+
+      //Check for win
+      if(player.x > 320 + player.width){
+        wins += 1;
+        document.getElementById('wins').innerHTML = wins;
+        player = new kirby();
+      }
 
     }
   }
@@ -209,7 +228,7 @@ document.onkeydown = function(evt) {
       case 39: //right
         player.moveRight();
         break;
-      case 40: //down
+      case 40: //downonclick
         player.moveDown();
         break;
   }
@@ -217,4 +236,32 @@ document.onkeydown = function(evt) {
 
 render();
 
-window.setInterval(render,100);
+var animating = window.setInterval(render,100);
+
+function reset(){
+  console.log("death");
+  lives = lives -1;
+  document.getElementById('lives').innerHTML = lives;
+  player = new kirby();
+
+  if(lives <= 0){
+    //Game Over man stop the animation
+    clearInterval(animating);
+    //Do whatever there is to do to allow the player to start up a new game
+  }
+}
+
+//Bind the event for catching death of kirby
+window.addEventListener("death", reset, false); //false to get it in bubble not capture. (https://developer.mozilla.org/en-US/docs/DOM/EventTarget.addEventListener)
+
+//Bind the event for resetting the game:
+document.getElementById('reset').onclick = function(){
+  lives = 5;
+  wins = 0;
+  document.getElementById('lives').innerHTML = lives;
+  document.getElementById('wins').innerHTML = wins;
+  clearInterval(animating);
+  animating = window.setInterval(render,100);
+  player = new kirby();
+
+};

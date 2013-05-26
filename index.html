@@ -35,13 +35,22 @@
 		<!-- Div to contain everything so we can place all content in the center of the page -->
 		<div id="mainContent">
 			<p>
-				Information
+				The objective of the game is simple. Get Kirby to the other side of the road without getting hit by any warp stars. Use the arrow keys to move kirby.
 			</p>
 			<!-- The Canvas to visualize on -->
 			<div id="drawingDiv">
-				<img id="loadImg" src="images/ajax-loader.gif">
+				<p>
+					<dl>
+						<dt>Lives</dt>
+						<dd id="lives">5</dd>
+						<dt>Wins</dt>
+						<dd id="wins">0</dd>
+					</dl>
+				</p>
+				<p>
+					<a href="" id="reset" onclick="return false;" >RESET GAME</a>
+				</p>
 				<canvas id="canvas" width="400px" height="400"></canvas>
-				
 			</div>
 		</div>
 

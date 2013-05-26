@@ -24,3 +24,9 @@ img{
 	display: block;
 	margin: auto;
 }
+
+dt,dd{
+	display: inline-block;
+	border-bottom: solid medium #000000;
+	
+}
