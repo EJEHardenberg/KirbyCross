@@ -15,7 +15,7 @@ function kirby(){
   this.x = 25;   this.y = 200; //Starts at midway
   this.width = 20;
   this.height = 20;
-  this.speed = 2;
+  this.speed = 3;
   this.draw = function(context){
       //Make our little friend gradient-y
       var my_gradient = context.createLinearGradient(this.x-this.width, this.y-this.height, this.x + this.width, this.y+this.height);
@@ -142,10 +142,10 @@ function makeStars(){
   var xs = [120,200,280];
   var ys = [];
   tmp =[];
-  for(var i =0; i < 10; i++){
+  for(var i =0; i < 7; i++){
     ys.push(getRandomInt(-60,360));
   }
-  for(var i=0; i < 10; i++){
+  for(var i=0; i < 7; i++){
     tmp.push(new star(xs[getRandomInt(0,2)],ys[i]));
   }
   return tmp;
