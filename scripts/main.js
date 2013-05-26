@@ -55,7 +55,8 @@ function kirby(){
 
     //For explanation of the boolean below, see my blog
     //http://ethaneldridgecs.blogspot.com/2012/11/kd-tree-range-bounded-algorithm.html
-    return ( !(xright < oleft) && !(oright < xleft) && !(otop < ybottom) && !(ytop < obottom) );
+
+    return  !(xright < oleft || oright < xleft || otop > ybottom || ytop > obottom );
   }
 }
 
@@ -128,7 +129,16 @@ function star(sx,sy){
 
     //For explanation of the boolean below, see my blog
     //http://ethaneldridgecs.blogspot.com/2012/11/kd-tree-range-bounded-algorithm.html
-    return  (xright < oleft) || (oright < xleft) || (otop < ybottom) || (ytop < obottom) ;
+    return  (xright < oleft) || (oright < xleft) || (otop > ybottom) || (ytop > obottom) ;
+  }
+  this.collide = function(b) {
+    var a = this;
+    return !(
+        ((a.y - a.height) < (b.y)) ||
+        (a.y > (b.y - b.height)) ||
+        ((a.x + a.width) < b.x) ||
+        (a.x > (b.x + b.width))
+    );
   }
 }
 
